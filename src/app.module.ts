@@ -5,12 +5,7 @@ import { Task } from './tasks/task.entity';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { async } from 'rxjs';
 import { configValidationSchema } from './config.schema';
-// console.log("check app.module.ts 27th line");
-
-// const STAGE = process.env.STAGE;
-console.log(process.env.MODE);
 
 @Module({
   imports: [
@@ -23,7 +18,12 @@ console.log(process.env.MODE);
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
+        const isProduction = configService.get('STAGE') === 'prod';
         return {
+          ssl: isProduction,
+          extra: {
+            ssl: isProduction ? { rejectUnauthorized: false } : null,
+          },
           type: 'postgres',
           host: configService.get('DB_HOST', { infer: true }),
           port: configService.get('DB_PORT', { infer: true }),
@@ -36,17 +36,6 @@ console.log(process.env.MODE);
         };
       },
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: 'localhost',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: 'kyahaipassword',
-    //   database: 'task-management',
-    //   entities: [Task, User],
-    //   autoLoadEntities: true,
-    //   synchronize: true,
-    // }),
     AuthModule,
   ],
 })

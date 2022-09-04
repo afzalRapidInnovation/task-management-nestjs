@@ -15,7 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private confgiService: ConfigService,
   ) {
     super({
-      // secretOrKey: 'topSecret51',
       secretOrKey: confgiService.get('JWT_SECRET', { infer: true }),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });

@@ -1,5 +1,4 @@
 import { InternalServerErrorException, Logger } from '@nestjs/common';
-import { timestamp } from 'rxjs';
 import { User } from 'src/auth/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -8,15 +7,12 @@ import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 
 @EntityRepository(Task)
-// @CustomRepository(Task)
 export class TasksRepository extends Repository<Task> {
   private logger = new Logger('TasksRepository', { timestamp: true });
 
   async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
-    // const tasks = ...;//how
     const query = this.createQueryBuilder('task').where({ user });
-    // query.where({ user });
 
     if (status) {
       query.andWhere('task.status = :status', { status });

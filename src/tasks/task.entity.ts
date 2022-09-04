@@ -1,4 +1,3 @@
-import { type } from 'os';
 import { User } from '../auth/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
